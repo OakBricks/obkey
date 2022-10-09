@@ -1,4 +1,4 @@
-#!/usr/bin/python2
+#!/usr/bin/python
 """
   Openbox Key Editor
   
@@ -57,13 +57,15 @@ import sys
 import os
 import re
 from obkey_parts import PropertyTable, KeyTable, ActionList, OpenboxConfig, Gtk
-
+import gi
+gi.require_version("Gtk", "3.0")
+from gi.repository import Gtk
 
 def get_rcfile():
     """return the rcfile from args or find it"""
     ret = None
     rcfileregex = re.compile(r'.*\.xml.*')
-    rcfiles = filter(rcfileregex.match, sys.argv)
+    rcfiles = list(filter(rcfileregex.match, sys.argv))
     if rcfiles:
         ret = rcfiles[0]
     else:
@@ -145,16 +147,18 @@ def usage():
             )
         )
     for (optname, optdesc) in OPT_DESC.items():
-        print "{0:<14s} {1:s}".format(optname, optdesc[0])
+        print("{0:<14s} {1:s}".format(optname, optdesc[0]))
         tmpopt = [optname]
         if len(optdesc) > 1: # params
             for (param, pdesc) in optdesc[1].items():
-                print "  {0:<14s} {1:s}".format(param, pdesc)
+                print("  {0:<14s} {1:s}".format(param, pdesc))
 
 if __name__ == '__main__':
     help_re = re.compile('--help|-h')
-    help_matched = filter(help_re.match, sys.argv)
+    # help_matched = re.match(help_re.match, sys.argv)
+    help_matched = help_re.match(sys.argv[0])
     if help_matched:
         usage()
     else:
         view()
+    # view()
